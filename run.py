@@ -400,3 +400,7 @@ if __name__ == "__main__":
 
     epochs = 50
     multimodal(unimodal_activations, args.data, args.classes, args.fusion, args.attention_2, use_raw=args.use_raw)
+
+
+# TODO
+# gui界面编写
