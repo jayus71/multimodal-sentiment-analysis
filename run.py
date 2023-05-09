@@ -16,6 +16,9 @@ from model import LSTM_Model
 
 from sklearn.metrics import f1_score
 
+from ui.test_line import MyWindow
+from PyQt5.QtWidgets import QApplication
+
 tf.set_random_seed(seed)
 
 unimodal_activations = {}
@@ -77,6 +80,14 @@ def multimodal(unimodal_activations, data, classes, attn_fusion=True, enable_att
     best_loss = 10000000.0
     best_epoch = 0
     best_epoch_loss = 0
+
+    # init the gui
+    app = QApplication(sys.argv)
+
+    # 创建并显示主窗口
+    my_window = MyWindow()
+    my_window.show()
+
     with tf.device('/device:GPU:%d' % gpu_device):
         print('Using GPU - ', '/device:GPU:%d' % gpu_device)
         with tf.Graph().as_default():
@@ -145,6 +156,7 @@ def multimodal(unimodal_activations, data, classes, attn_fusion=True, enable_att
                         a.append(accuracy)
 
                     print("\t \tEpoch {}:, loss {:g}, accuracy {:g}".format(epoch, np.average(l), np.average(a)))
+                    my_window.update_chart(epoch, np.average(l), np.average(a))
                     # Evaluation after epoch
                     step, loss, accuracy, preds, y, mask = sess.run(
                         [model.global_step, model.loss, model.accuracy, model.preds, model.y, model.mask],
@@ -156,6 +168,8 @@ def multimodal(unimodal_activations, data, classes, attn_fusion=True, enable_att
                                                                                                loss / test_label.shape[
                                                                                                    0],
                                                                                                accuracy, f1))
+                    my_window.update_chart2(epoch, loss / test_label.shape[0], accuracy)
+                    QApplication.processEvents()
                     if accuracy > best_acc:
                         best_epoch = epoch
                         best_acc = accuracy
@@ -167,6 +181,7 @@ def multimodal(unimodal_activations, data, classes, attn_fusion=True, enable_att
                 print(
                     "\n\nBest epoch: {}\nBest test accuracy: {}\nBest epoch loss: {}\nBest test accuracy when loss is least: {}".format(
                         best_epoch, best_acc, best_epoch_loss, best_loss_accuracy))
+                app.exec_()
 
 
 def unimodal(mode, data, classes):
@@ -367,8 +382,8 @@ def str2bool(v):
 if __name__ == "__main__":
     argv = sys.argv[1:]
     parser = argparse.ArgumentParser()
-    parser.add_argument("--unimodal", type=str2bool, nargs='?', const=True, default=True)
-    parser.add_argument("--fusion", type=str2bool, nargs='?', const=True, default=False)
+    parser.add_argument("--unimodal", type=str2bool, nargs='?', const=True, default=False)
+    parser.add_argument("--fusion", type=str2bool, nargs='?', const=True, default=True)
     parser.add_argument("--attention_2", type=str2bool, nargs='?', const=True, default=False)
     parser.add_argument("--use_raw", type=str2bool, nargs='?', const=True, default=False)
     parser.add_argument("--data", type=str, default='mosi')
@@ -402,5 +417,6 @@ if __name__ == "__main__":
     multimodal(unimodal_activations, args.data, args.classes, args.fusion, args.attention_2, use_raw=args.use_raw)
 
 
-# TODO
+# DOING
 # gui界面编写
+
