@@ -1,6 +1,3 @@
-
-
-
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget,QComboBox,QPushButton,QHBoxLayout
 from PyQt5.QtChart import QChart, QChartView, QLineSeries
