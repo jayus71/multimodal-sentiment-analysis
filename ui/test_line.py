@@ -97,29 +97,29 @@ class MyWindow(QMainWindow):
         self.setLayout(v_layout)
 
 
-        # 添加控件
-        # 创建下拉框1
-        self.combo_box1 = QComboBox()
-        self.combo_box1.addItems(['Line Chart 1', 'Line Chart 2'])
-        # self.combo_box1.currentIndexChanged.connect(self.handle_combo_box1)
+        # # 添加控件
+        # # 创建下拉框1
+        # self.combo_box1 = QComboBox()
+        # self.combo_box1.addItems(['Line Chart 1', 'Line Chart 2'])
+        # # self.combo_box1.currentIndexChanged.connect(self.handle_combo_box1)
 
-        # 创建下拉框2
-        self.combo_box2 = QComboBox()
-        self.combo_box2.addItems(['Line Chart 3', 'Line Chart 4'])
-        # self.combo_box2.currentIndexChanged.connect(self.handle_combo_box2)
+        # # 创建下拉框2
+        # self.combo_box2 = QComboBox()
+        # self.combo_box2.addItems(['Line Chart 3', 'Line Chart 4'])
+        # # self.combo_box2.currentIndexChanged.connect(self.handle_combo_box2)
 
-        # 创建按钮
-        self.button = QPushButton('Start Training')
-        # self.button.clicked.connect(self.start_training)
+        # # 创建按钮
+        # self.button = QPushButton('Start Training')
+        # # self.button.clicked.connect(self.start_training)
 
-        # 添加下拉框1、下拉框2和按钮到窗口中
-        h_layout = QHBoxLayout()
-        h_layout.addWidget(self.combo_box1)
-        h_layout.addWidget(self.combo_box2)
-        h_layout.addStretch()
-        h_layout.addWidget(self.button)
+        # # 添加下拉框1、下拉框2和按钮到窗口中
+        # h_layout = QHBoxLayout()
+        # h_layout.addWidget(self.combo_box1)
+        # h_layout.addWidget(self.combo_box2)
+        # h_layout.addStretch()
+        # h_layout.addWidget(self.button)
 
-        v_layout.addLayout(h_layout)
+        # v_layout.addLayout(h_layout)
     def update_chart(self, epoch, loss, accuracy):
         # 在图表中添加新的点
         self.loss_series.append(epoch, loss)
@@ -159,8 +159,8 @@ if __name__ == '__main__':
 
     # 模拟训练过程，每秒更新一次图表
     epoch = 1
-    loss = 0.7
-    accuracy = 0.5
+    loss = 1.2
+    accuracy = 0.4
     while True:
         my_window.update_chart(epoch, loss, accuracy)
         my_window.update_chart2(epoch,loss,accuracy)

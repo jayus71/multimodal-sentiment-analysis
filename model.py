@@ -202,12 +202,11 @@ class LSTM_Model():
 
     def self_attention_2(self, inputs, name):
         """
+        Calculate self-attention for the given inputs.
 
-        :param inputs_a: audio input (B, T, dim)
-        :param inputs_v: video input (B, T, dim)
-        :param inputs_t: text input (B, T, dim)
+        :param inputs: input tensor of shape (batch_size, time_steps, hidden_size)
         :param name: scope name
-        :return:
+        :return: output tensor after self-attention calculation
         """
 
         t = inputs.get_shape()[1].value

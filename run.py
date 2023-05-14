@@ -27,7 +27,7 @@ unimodal_activations = {}
 def multimodal(unimodal_activations, data, classes, attn_fusion=True, enable_attn_2=False, use_raw=True):
     if use_raw:
         if attn_fusion:
-            attn_fusion = False
+           attn_fusion = False
 
         train_data, test_data, audio_train, audio_test, text_train, text_test, video_train, video_test, train_label, test_label, seqlen_train, seqlen_test, train_mask, test_mask = get_raw_data(
             data, classes)

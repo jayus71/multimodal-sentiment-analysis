@@ -7,9 +7,9 @@ doing  gui界面
 ## MOSI:
 **2 classes**: Positive/Negative <br>
 Raw Features: (Pickle files) <br>
-Audio: dataset/mosi/raw/audio_2way.pickle <br>
-Text: dataset/mosi/raw/text_2way.pickle <br>
-Video: dataset/mosi/raw/video_2way.pickle <br>
+Audio: dataset/mosi/raw/audio_2way.pickle <br> feature_dim：73
+Text: dataset/mosi/raw/text_2way.pickle <br> feature_dim：100
+Video: dataset/mosi/raw/video_2way.pickle <br> feature_dim：100
 
 **Each file contains: <br>**
 train_data, train_label, test_data, test_label, maxlen, train_length, test_length
@@ -46,17 +46,18 @@ Train/Test split: 120/31 videos. Each video has utterances. The videos are padde
 ## MOSEI:
 **3 classes**: positive/negative/neutral <br>
 Raw Features: (Pickle files) <br>
-Audio: dataset/mosei/raw/audio_3way.pickle <br>
-Text: dataset/mosei/raw/text_3way.pickle <br>
-Video: dataset/mosei/raw/video_3way.pickle <br>
+Audio: dataset/mosei/raw/audio_3way.pickle <br> feature_dim：74
+Text: dataset/mosei/raw/text_3way.pickle <br>  feature_dim：35
+Video: dataset/mosei/raw/video_3way.pickle <br> feature_dim：300
 
 The file contains:
 train_data, train_label, test_data, test_label, maxlen, train_length, test_length
 
+> 修正原说明为正确说明，原来的说明跟mosi相同，是错误的
 train_data - np.array of dim (2250, 98, feature_dim) <br>
-train_label - np.array of dim (62, 63, 2) <br>
-test_data - np.array of dim (31, 63, feature_dim) <br>
-test_label - np.array of dim (31, 63, 2) <br>
+train_label - np.array of dim (2250, 98, 3) <br>
+test_data - np.array of dim (678, 98, feature_dim) <br>
+test_label - np.array of dim (678, 98, 3) <br>
 maxlen - max utterance length  int of value 98 <br>
 train_length - utterance length of each video in train data. <br>
 test_length - utterance length of each video in test data. <br>
