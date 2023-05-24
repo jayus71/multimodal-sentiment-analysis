@@ -392,7 +392,7 @@ if __name__ == "__main__":
 
     print(args)
 
-    batch_size = 20
+    batch_size = 32
     epochs = 100
     emotions = args.classes
     assert args.data in ['mosi', 'mosei', 'iemocap']
