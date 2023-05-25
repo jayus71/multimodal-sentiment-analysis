@@ -86,7 +86,7 @@ def multimodal(unimodal_activations, data, classes, attn_fusion=True, enable_att
 
     # 创建并显示主窗口
     my_window = MyWindow()
-    my_window.setWindowTitle('Multimodal Loss and Accuracy Graph in'+data)
+    my_window.setWindowTitle('Multimodal Loss and Accuracy Graph in '+data)
     my_window.show()
 
     with tf.device('/device:GPU:%d' % gpu_device):
@@ -195,7 +195,7 @@ def unimodal(mode, data, classes):
 
     # 创建并显示主窗口
     my_window = MyWindow()
-    my_window.setWindowTitle(mode+' Loss and Accuracy Graph in'+data)
+    my_window.setWindowTitle(mode+' Loss and Accuracy Graph in '+data)
     my_window.show()
 
     # with open('./mosei/text_glove_average.pickle', 'rb') as handle:
