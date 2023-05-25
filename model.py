@@ -63,10 +63,27 @@ class LSTM_Model():
             return output
 
     def BiGRU(self, inputs, output_size, name, dropout_keep_rate):
+        """
+        双向GRU函数
+
+        该函数定义了双向GRU（Gated Recurrent Unit）层的操作。
+
+        Args:
+            inputs: 输入张量，形状为 [batch_size, max_seq_len, input_dim]，输入的序列数据
+            output_size: 输出维度大小，即每个时间步输出的特征维度
+            name: 变量作用域的名称
+            dropout_keep_rate: dropout保持率，控制GRU输出的dropout率
+
+        Returns:
+            output: 输出张量，形状为 [batch_size, max_seq_len, output_size]，双向GRU层的输出结果
+
+        """
+
         with tf.variable_scope('rnn_' + name, reuse=tf.AUTO_REUSE):
             kernel_init = tf.glorot_uniform_initializer(seed=self.seed, dtype=tf.float32)
             bias_init = tf.zeros_initializer()
 
+            # 前向 / 后向GRU
             fw_cell = tf.contrib.rnn.GRUCell(output_size, name='gru', reuse=tf.AUTO_REUSE, activation=tf.nn.tanh,
                                              kernel_initializer=kernel_init, bias_initializer=bias_init)
             fw_cell = tf.contrib.rnn.DropoutWrapper(fw_cell, output_keep_prob=dropout_keep_rate)
@@ -79,6 +96,11 @@ class LSTM_Model():
                                                          sequence_length=self.seq_len, dtype=tf.float32)
 
             output_fw, output_bw = outputs
+            '''
+            假设output_fw和output_bw的形状为(batch_size, sequence_length, hidden_size)，
+            那么拼接后的输出张量output的形状也是(batch_size, sequence_length, hidden_size*2)。
+            在拼接时，会将output_fw和output_bw按照最后一个维度（hidden_size维度）进行连接，形成一个更大的张量。
+            '''
             output = tf.concat([output_fw, output_bw], axis=-1)
             return output
 
@@ -295,9 +317,18 @@ class LSTM_Model():
         self.loss = tf.reduce_sum(loss) / tf.reduce_sum(self.mask)
 
     def _initialize_optimizer(self):
+        """
+        初始化优化器函数
+
+        该函数的功能是设置模型的优化器，并定义损失函数以及正则化项的计算。
+
+        Args:
+            self: LSTM_Model 类的实例对象
+        """
         train_vars = tf.trainable_variables()
         reg_loss = []
         total_parameters = 0
+        # 计算正则化损失
         for train_var in train_vars:
             # print(train_var.name)
             reg_loss.append(tf.nn.l2_loss(train_var))
@@ -310,10 +341,14 @@ class LSTM_Model():
         # print(total_parameters)
         print('Trainable parameters:', total_parameters)
 
+        # 将正则化损失添加到总损失中
         self.loss = self.loss + 0.00001 * tf.reduce_mean(reg_loss)
+        # 定义全局步数变量
         self.global_step = tf.get_variable(shape=[], initializer=tf.constant_initializer(0), dtype=tf.int32,
                                            name='global_step')
+        
+        # 设置优化器（这里使用Adam优化器）
         self._optimizer = tf.train.AdamOptimizer(learning_rate=self.lr, beta1=0.9, beta2=0.999)
         # self._optimizer = tf.train.AdadeltaOptimizer(learning_rate=1.0, rho=0.95, epsilon=1e-08)
-
+        # 定义训练操作，通过优化器最小化损失函数，并更新全局步数
         self.train_op = self._optimizer.minimize(self.loss, global_step=self.global_step)

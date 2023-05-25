@@ -86,6 +86,7 @@ def multimodal(unimodal_activations, data, classes, attn_fusion=True, enable_att
 
     # 创建并显示主窗口
     my_window = MyWindow()
+    my_window.setWindowTitle('Multimodal Loss and Accuracy Graph in'+data)
     my_window.show()
 
     with tf.device('/device:GPU:%d' % gpu_device):
@@ -98,6 +99,7 @@ def multimodal(unimodal_activations, data, classes, attn_fusion=True, enable_att
                                    emotions=classes, attn_fusion=attn_fusion,
                                    unimodal=False, enable_attn_2=enable_attn_2,
                                    seed=seed)
+                # 初始化计算图中的全局和局部变量
                 sess.run(tf.group(tf.global_variables_initializer(), tf.local_variables_initializer()))
 
                 test_feed_dict = {
@@ -133,9 +135,11 @@ def multimodal(unimodal_activations, data, classes, attn_fusion=True, enable_att
                     l = []
                     a = []
                     for i, batch in tqdm(enumerate(batches)):
+                        # 提取批次中的训练数据、训练数据的掩码、序列长度和标签。
                         b_text_train, b_audio_train, b_video_train, b_train_mask, b_seqlen_train, b_train_label = zip(
                             *batch)
                         # print('batch_hist_v', len(batch_utt_v))
+                        # 创建 feed_dict 字典，用于提供数据给模型的占位符变量。
                         feed_dict = {
                             model.t_input: b_text_train,
                             model.a_input: b_audio_train,
@@ -186,6 +190,13 @@ def multimodal(unimodal_activations, data, classes, attn_fusion=True, enable_att
 
 def unimodal(mode, data, classes):
     print(('starting unimodal ', mode))
+    # init the gui
+    app = QApplication(sys.argv)
+
+    # 创建并显示主窗口
+    my_window = MyWindow()
+    my_window.setWindowTitle(mode+' Loss and Accuracy Graph in'+data)
+    my_window.show()
 
     # with open('./mosei/text_glove_average.pickle', 'rb') as handle:
     if data == 'mosei' or data == 'mosi':
@@ -264,6 +275,7 @@ def unimodal(mode, data, classes):
             with sess.as_default():
                 model = LSTM_Model(train_data.shape[1:], 0.0001, a_dim=0, v_dim=0, t_dim=0, emotions=classes,
                                    attn_fusion=attn_fusion, unimodal=is_unimodal, seed=seed)
+                # 初始化计算图中的全局和局部变量
                 sess.run(tf.group(tf.global_variables_initializer(), tf.local_variables_initializer()))
 
                 test_feed_dict = {
@@ -299,17 +311,20 @@ def unimodal(mode, data, classes):
                 for epoch in range(epochs):
                     epoch += 1
 
+                    # 
                     batches = batch_iter(list(
                         zip(train_data, train_mask, seqlen_train, train_label)),
                         batch_size)
 
-                    # Training loop. For each batch...
+                    # 训练
                     print('\nTraining epoch {}'.format(epoch))
                     l = []
                     a = []
                     for i, batch in tqdm(enumerate(batches)):
+                        # 提取批次中的训练数据、训练数据的掩码、序列长度和标签。
                         b_train_data, b_train_mask, b_seqlen_train, b_train_label = zip(
                             *batch)
+                        # 创建 feed_dict 字典，用于提供数据给模型的占位符变量。
                         feed_dict = {
                             model.input: b_train_data,
                             model.y: b_train_label,
@@ -329,13 +344,16 @@ def unimodal(mode, data, classes):
                         a.append(accuracy)
 
                     print("\t \tEpoch {}:, loss {:g}, accuracy {:g}".format(epoch, np.average(l), np.average(a)))
-                    # Evaluation after epoch
+                    my_window.update_chart(epoch, np.average(l), np.average(a))
+                    # 每个epoch结束后，进行评估
                     step, loss, accuracy, test_activations = sess.run(
                         [model.global_step, model.loss, model.accuracy, model.inter1],
                         test_feed_dict)
                     loss = loss / test_label.shape[0]
                     print("EVAL: After epoch {}: step {}, loss {:g}, acc {:g}".format(epoch, step, loss, accuracy))
-
+                    my_window.update_chart2(epoch, loss / test_label.shape[0], accuracy)
+                    QApplication.processEvents()
+                    
                     if accuracy > best_acc:
                         best_epoch = epoch
                         best_acc = accuracy
@@ -384,7 +402,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--unimodal", type=str2bool, nargs='?', const=True, default=False)
     parser.add_argument("--fusion", type=str2bool, nargs='?', const=True, default=True)
-    parser.add_argument("--attention_2", type=str2bool, nargs='?', const=True, default=False)
+    parser.add_argument("--attention_2", type=str2bool, nargs='?', const=True, default=True)
     parser.add_argument("--use_raw", type=str2bool, nargs='?', const=True, default=False)
     parser.add_argument("--data", type=str, default='mosi')
     parser.add_argument("--classes", type=str, default='2')
@@ -417,6 +435,6 @@ if __name__ == "__main__":
     multimodal(unimodal_activations, args.data, args.classes, args.fusion, args.attention_2, use_raw=args.use_raw)
 
 
-# DOING
+# DONE
 # gui界面编写
 
