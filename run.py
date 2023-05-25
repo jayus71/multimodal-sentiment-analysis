@@ -353,7 +353,7 @@ def unimodal(mode, data, classes):
                     print("EVAL: After epoch {}: step {}, loss {:g}, acc {:g}".format(epoch, step, loss, accuracy))
                     my_window.update_chart2(epoch, loss / test_label.shape[0], accuracy)
                     QApplication.processEvents()
-                    
+
                     if accuracy > best_acc:
                         best_epoch = epoch
                         best_acc = accuracy
@@ -386,7 +386,7 @@ def unimodal(mode, data, classes):
 
                 print("\n\nBest epoch: {}\nBest test accuracy: {}".format(best_epoch, best_acc))
                 print("\n\nBest epoch: {}\nBest test loss: {}".format(best_epoch_loss, best_loss))
-
+                app.exec_()
 
 def str2bool(v):
     if v.lower() in ('yes', 'true', 't', 'y', '1'):
@@ -404,8 +404,8 @@ if __name__ == "__main__":
     parser.add_argument("--fusion", type=str2bool, nargs='?', const=True, default=True)
     parser.add_argument("--attention_2", type=str2bool, nargs='?', const=True, default=True)
     parser.add_argument("--use_raw", type=str2bool, nargs='?', const=True, default=False)
-    parser.add_argument("--data", type=str, default='mosi')
-    parser.add_argument("--classes", type=str, default='2')
+    parser.add_argument("--data", type=str, default='iemocap')
+    parser.add_argument("--classes", type=str, default='6')
     args, _ = parser.parse_known_args(argv)
 
     print(args)
