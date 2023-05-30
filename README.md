@@ -1,6 +1,6 @@
 # 毕业设计-多模态情绪分析
-doing  gui界面
-done gui界面和视频录制 2023.5.25
+- doing  gui界面
+- done gui界面和视频录制 2023.5.25
 
 # 数据集简介
 
@@ -54,6 +54,7 @@ The file contains:
 train_data, train_label, test_data, test_label, maxlen, train_length, test_length
 
 > 修正原说明为正确说明，原来的说明跟mosi相同，是错误的
+
 train_data - np.array of dim (2250, 98, feature_dim) <br>
 train_label - np.array of dim (2250, 98, 3) <br>
 test_data - np.array of dim (678, 98, feature_dim) <br>

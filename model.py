@@ -301,13 +301,12 @@ class LSTM_Model():
                             kernel_regularizer=tf.contrib.layers.l2_regularizer(0.001))(self.inter1)
         # print('self.output', self.output.get_shape())
         self.preds = tf.nn.softmax(self.output)
-        # To calculate the number correct, we want to count padded steps as incorrect
+        # 计算正确预测的数量时，将填充步骤视为不正确的
         correct = tf.cast(
             tf.equal(tf.argmax(self.preds, -1, output_type=tf.int32), tf.argmax(self.y, -1, output_type=tf.int32)),
             tf.int32) * tf.cast(self.mask, tf.int32)
 
-        # To calculate accuracy we want to divide by the number of non-padded time-steps,
-        # rather than taking the mean
+        # 计算准确率时，除以非填充时间步骤的数量，而不是取平均值
         self.accuracy = tf.reduce_sum(tf.cast(correct, tf.float32)) / tf.reduce_sum(tf.cast(self.seq_len, tf.float32))
         # y = tf.argmax(self.y, -1)
 

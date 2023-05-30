@@ -6,9 +6,7 @@ import numpy as np
 
 from data_prep import batch_iter, createOneHotMosei2way, get_raw_data, createOneHot
 
-seed = 1234
 
-np.random.seed(seed)
 import tensorflow as tf
 from tqdm import tqdm
 
@@ -18,7 +16,9 @@ from sklearn.metrics import f1_score
 
 from ui.test_line import MyWindow
 from PyQt5.QtWidgets import QApplication
+seed = 1234
 
+np.random.seed(seed)
 tf.set_random_seed(seed)
 
 unimodal_activations = {}
@@ -311,7 +311,6 @@ def unimodal(mode, data, classes):
                 for epoch in range(epochs):
                     epoch += 1
 
-                    # 
                     batches = batch_iter(list(
                         zip(train_data, train_mask, seqlen_train, train_label)),
                         batch_size)

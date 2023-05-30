@@ -86,7 +86,7 @@ def batch_iter(data, batch_size, shuffle=True):
     data = np.array(data)
     data_size = len(data)
     num_batches_per_epoch = int((len(data) - 1) / batch_size) + 1
-    # Shuffle the data at each epoch
+    # 随机化每个batch的数据
     if shuffle:
         shuffle_indices = np.random.permutation(np.arange(data_size))
         shuffled_data = data[shuffle_indices]
@@ -151,6 +151,7 @@ def get_raw_data(data, classes):
 
     test_mask = np.zeros((test_data.shape[0], test_data.shape[1]), dtype='float')
     for i in range(len(test_length)):
+        # 将有意义的切片的掩码赋值为 1 ，其余填充的保持为 0
         test_mask[i, :test_length[i]] = 1.0
 
     train_label, test_label = createOneHot(train_label, test_label)
@@ -164,22 +165,18 @@ def get_raw_data(data, classes):
 
 
 def get_iemocap_raw(classes):
+    '''
+    label index mapping = {'happy':0, 'sad':1, 'neutral':2, 'angry':3, 'excited':4, 'frustrated':5}
+    '''
     if sys.version_info[0] == 2:
         f = open("dataset/iemocap/raw/IEMOCAP_features_raw.pkl", "rb")
         videoIDs, videoSpeakers, videoLabels, videoText, videoAudio, videoVisual, videoSentence, trainVid, testVid = pickle.load(
             f)
-
-        '''
-        label index mapping = {'hap':0, 'sad':1, 'neu':2, 'ang':3, 'exc':4, 'fru':5}
-        '''
     else:
         f = open("dataset/iemocap/raw/IEMOCAP_features_raw.pkl", "rb")
         u = pickle._Unpickler(f)
         u.encoding = 'latin1'
         videoIDs, videoSpeakers, videoLabels, videoText, videoAudio, videoVisual, videoSentence, trainVid, testVid = u.load()
-        '''
-        label index mapping = {'hap':0, 'sad':1, 'neu':2, 'ang':3, 'exc':4, 'fru':5}
-        '''
 
     # print(len(trainVid))
     # print(len(testVid))
@@ -203,6 +200,7 @@ def get_iemocap_raw(classes):
     max_len = max(max(train_seq_len), max(test_seq_len))
     print('max_len', max_len)
     for vid in trainVid:
+        # 填充到最大长度
         train_label.append(videoLabels[vid] + [0] * (max_len - len(videoIDs[vid])))
         pad = [np.zeros(videoText[vid][0].shape)] * (max_len - len(videoIDs[vid]))
         text = np.stack(videoText[vid] + pad, axis=0)
